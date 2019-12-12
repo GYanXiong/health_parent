@@ -1,7 +1,10 @@
 package com.itheima.health.job;
 
 import com.itheima.health.constant.RedisConstant;
+import com.itheima.health.pojo.OrderSetting;
+import com.itheima.health.service.OrderSettingService;
 import com.itheima.health.utils.QiniuUtils;
+import jdk.nashorn.internal.ir.annotations.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisPool;
 
@@ -21,6 +24,7 @@ public class ClearImgJob {
     @Autowired
     JedisPool jedisPool;
 
+
     // 删除图片的方法
     public void deletePic(){
         Set<String> set = jedisPool.getResource().sdiff(RedisConstant.SETMEAL_PIC_RESOURCE, RedisConstant.SETMEAL_PIC_DB_RESOURCE);
@@ -34,4 +38,7 @@ public class ClearImgJob {
             jedisPool.getResource().srem(RedisConstant.SETMEAL_PIC_RESOURCE,pic);
         }
     }
+
+
+
 }

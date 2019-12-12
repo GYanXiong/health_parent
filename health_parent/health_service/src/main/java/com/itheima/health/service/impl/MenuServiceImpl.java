@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +38,7 @@ public class MenuServiceImpl implements MenuService {
         Set<Menu> menus = new HashSet<>();
 
         for (Role role : roles) {
-            System.out.println(role.getName());
+            // System.out.println(role.getName());
             //获取父标题
             List<Menu> ParentList = menuDao.findParentMenuByRoleId(role.getId());
             for (Menu PatentMenu : ParentList) {
@@ -53,7 +54,8 @@ public class MenuServiceImpl implements MenuService {
                 ArrayList<Menu> menus1 = new ArrayList<>();
                 menus1.addAll(son);
                 PatentMenu.setChildren(menus1);
-                menus.add(PatentMenu);
+                if (PatentMenu.getChildren().size() != 0)
+                    menus.add(PatentMenu);
             }
         }
 

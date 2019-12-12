@@ -14,10 +14,16 @@
                http://www.springframework.org/schema/tx/spring-tx.xsd">
     <!--1：配置自定义Job类-->
     <bean id="jobDemo" class="com.itheima.health.job.ClearImgJob"/>
+    <bean id="clearDataNumber" class="com.itheima.health.job.ClearDataNumber"/>
     <!--2：创建任务描述细节类（工厂），描述任务类和任务类中的方法-->
     <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="jobDemo"/>
         <property name="targetMethod" value="deletePic"/>
+    </bean>
+
+    <bean id="jobDetail1111" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="clearDataNumber"/>
+        <property name="targetMethod" value="deleteNumberByOrderDate"/>
     </bean>
 
     <!--3：创建触发器对象（工厂），指定触发任务的时间
@@ -33,12 +39,18 @@
         -->
         <property name="cronExpression" value="10 27 12 * * ?"/>
     </bean>
-
+    <!--清理历史预约数据设置-->
+    <bean id="trigger1111" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail1111"/>
+        <property name="cronExpression" value="0 0 1 1 * ?"/>
+                                <!--每月1号凌晨1点执行一次：-->
+    </bean>
     <!--4：创建任务调度对象（工厂），调度触发器-->
     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
                 <ref bean="trigger"/>
+                <ref bean="trigger1111"/>
             </list>
         </property>
     </bean>
