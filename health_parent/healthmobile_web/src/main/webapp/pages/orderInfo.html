@@ -152,7 +152,7 @@
                 mounted(){
                     axios.post("/setmeal/findById.do?id=" + id).then((response) => {
                         // 返回Result(flag,message,data)，data表示Setmeal对象
-                        this.setmeal = response.data.data;
+                        this.setmeal = eval("("+response.data.data+")");
                         this.imgUrl = 'http://q1rk0sp3v.bkt.clouddn.com/' + this.setmeal.img;
                     });
                 }

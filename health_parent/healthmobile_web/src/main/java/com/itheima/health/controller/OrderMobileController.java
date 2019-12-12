@@ -70,8 +70,9 @@ public class OrderMobileController {
             String hget = resource.hget(RedisConstant.ORDER_HASH_RESOURCE, id + "");
             if(StringUtils.isEmpty(hget)){
                 Map<String,Object> map = orderService.findById(id);
-                resource.hset(RedisConstant.ORDER_HASH_RESOURCE, id + "", JSONObject.toJSONString(map));
-                return new Result(true,MessageConstant.QUERY_ORDER_SUCCESS,map);
+                String orderString = JSONObject.toJSONString(map);
+                resource.hset(RedisConstant.ORDER_HASH_RESOURCE, id + "", orderString);
+                return new Result(true,MessageConstant.QUERY_ORDER_SUCCESS,orderString);
             }else{
                 return new Result(true,MessageConstant.QUERY_ORDER_SUCCESS,hget);
             }

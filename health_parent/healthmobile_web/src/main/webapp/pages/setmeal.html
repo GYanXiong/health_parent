@@ -58,7 +58,13 @@
             axios.post("/setmeal/getSetmeal.do").then((response)=>{
                 // 返回Result(flag,message,data)   data：套餐的集合List<Setmeal>
                 if(response.data.flag){
-                    this.setmealList = response.data.data;
+                    var list = response.data.data;
+                    for (let i = 0; i <list.length ; i++) {
+                        this.setmealList.push(eval('(' + list[i] + ')'))
+                    }
+                    // this.setmealList = eval('(' + response.data.data + ')');
+                    // console.log(eval('(' + response.data.data + ')'));
+                    console.log(this.setmealList)
                 }
             });
         }

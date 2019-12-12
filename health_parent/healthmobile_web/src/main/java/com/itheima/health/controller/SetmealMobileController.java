@@ -44,19 +44,21 @@ public class SetmealMobileController {
             List<String> hvals = resource.hvals(RedisConstant.SETMEAL_HASH_RESOURCE);
             if (ObjectUtils.isEmpty(hvals)) {
                 List<Setmeal> list = setmealService.findAll();
+                System.out.println(list);
                 for (Setmeal setmeal : list) {
-                    resource.hset(RedisConstant.SETMEAL_HASH_RESOURCE, setmeal.getId() + "", JSONObject.toJSONString(setmeal));
+                    String setMealString = JSONObject.toJSONString(setmeal);
+                    resource.hset(RedisConstant.SETMEAL_HASH_RESOURCE, setmeal.getId() + "", setMealString);
+                    hvals.add(setMealString);
                 }
-                return new Result(true, MessageConstant.GET_SETMEAL_LIST_SUCCESS, list);
-            } else {
-                return new Result(true, MessageConstant.GET_SETMEAL_LIST_SUCCESS, hvals);
             }
+            return new Result(true, MessageConstant.GET_SETMEAL_LIST_SUCCESS, hvals);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, MessageConstant.GET_SETMEAL_LIST_FAIL);
         } finally {
             resource.close();
         }
+
     }
 
     // 使用套餐id，查询套餐详情
@@ -67,7 +69,7 @@ public class SetmealMobileController {
             String hget = resource.hget(RedisConstant.SETMEAL_HASH_RESOURCE, id + "");
             if (StringUtils.isEmpty(hget)) {
                 Setmeal setmeal = setmealService.findById(id);
-                return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, setmeal);
+                return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, JSONObject.toJSONString(setmeal));
             } else {
                 return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, hget);
             }
