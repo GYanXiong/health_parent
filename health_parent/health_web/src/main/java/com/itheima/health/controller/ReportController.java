@@ -6,9 +6,11 @@ import com.itheima.health.entity.Result;
 import com.itheima.health.service.MemberService;
 import com.itheima.health.service.ReportService;
 import com.itheima.health.service.SetmealService;
+import com.itheima.health.utils.DateUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -181,6 +183,42 @@ public class ReportController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+
+    // 统计会员注册的折线图
+    @RequestMapping(value = "/getMemberDateReport")
+    public Result getMemberDateReport(@RequestBody Map map){
+        try {
+            // 获取用户选择的开始日期
+            String minOrderDate = (String) map.get("minOrderDate");
+            // 获取用户选择的结束日期
+            String maxOrderDate = (String) map.get("maxOrderDate");
+            // 转化格式
+            String format = "yyyy-MM";
+            // 获取开始和结束之间的月份
+            List<String> monthBetween = DateUtils.getMonthBetween(minOrderDate, maxOrderDate, format);
+            // 创建一个list集合存放会员数量
+            List<Integer> memberList = new ArrayList<>();
+            // 遍历集合
+            for (int i = 0; i < monthBetween.size(); i++) {
+                String begin = monthBetween.get(i) + "-01";
+                String end = monthBetween.get(i) + "-31";
+                Map countMap = new HashMap();
+                countMap.put("begin",begin);
+                countMap.put("end",end);
+                Integer memberCount = memberService.findByCurrentMemberCount(countMap);
+                memberList.add(memberCount);
+            }
+            // 构造Map集合
+            Map<String,Object> dateMap = new HashMap<>();
+            dateMap.put("months",monthBetween); // List<String>
+            dateMap.put("memberCount",memberList); // List<Integer>
+            return new Result(true, MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS,dateMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false,MessageConstant.GET_MEMBER_NUMBER_REPORT_FAIL);
         }
     }
 }
