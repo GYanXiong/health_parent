@@ -40,4 +40,8 @@
     <select id="findThisNewMember" parameterType="string" resultType="int">
         SELECT COUNT(*) FROM t_member WHERE regTime &gt;= #{date}
     </select>
+
+    <select id="findByCurrentMemberCount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM t_member WHERE regTime BETWEEN #{begin} AND #{end}
+    </select>
 </mapper>
