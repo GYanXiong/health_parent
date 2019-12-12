@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../js/echarts.js"></script>
+        <script src="../js/vue.js"></script>
+        <script src="../js/axios-0.18.0.js"></script>
+        <!--引入样式 -->
+        <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        <!-- 引入组件库 -->
+        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>统计分析<small>会员数量</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>统计分析</el-breadcrumb-item>
+                    <el-breadcrumb-item>会员数量</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="excelTitle" >
+                <br>
+                <el-row :gutter="5">
+                    <el-col :span="5">
+                        <div></div>
+                    </el-col>
+                    <el-col :span="7" :offset="6">
+                        <template>
+                            <div class="block">
+                                <span class="demonstration">请选择日期范围</span>
+                                <el-date-picker
+                                        v-model="value2"
+                                        type="monthrange"
+                                        align="right"
+                                        unlink-panels
+                                        value-format="yyyy-MM"
+                                        range-separator="至"
+                                        start-placeholder="开始月份"
+                                        end-placeholder="结束月份"
+                                        :picker-options="pickerOptions">
+                                </el-date-picker>
+                            </div>
+                        </template>
+
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button round @click="submitOrder()">点击查询</el-button>
+                    </el-col>
+                    <el-col :span="5"></el-col>
+                </el-row>
+            </div>
+
+            <div class="app-container">
+                <div class="box">
+                    <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+                    <div id="chart1" style="height:600px;"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                value2: [],
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '本月',
+                        onClick(picker) {
+                            picker.$emit('pick', [new Date(), new Date()]);
+                        }
+                    }, {
+                        text: '今年至今',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date(new Date().getFullYear(), 0);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近六个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setMonth(start.getMonth() - 6);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                }
+            },
+            methods:{
+                submitOrder(){
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart1 = echarts.init(document.getElementById('chart1'));
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    //myChart.setOption(option);
+                    var param ={
+                        minOrderDate: this.value2[0],
+                        maxOrderDate: this.value2[1]
+                    };
+                    axios.post("/report/getMemberDateReport.do",param).then((res)=>{
+                        /**
+                         *  返回Result(flag,message,data)
+                         *    data 封装 Map
+                         *      map集合的key           map集合的value
+                         *         months               List<String>
+                         *         memberCount          List<Integer>
+                         */
+                        myChart1.setOption(
+                            {
+                                title: {
+                                    text: '会员数量'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data:['数量']
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: res.data.data.months
+                                },
+                                yAxis: {
+                                    type:'value'
+                                },
+                                series: [{
+                                    name: '数量',
+                                    type: 'line',
+                                    data: res.data.data.memberCount,
+                                    areaStyle: {}
+                                }]
+                            });
+                    });
+                }
+            }
+        });
+    </script>
+</html>
+<style>
+    .el-row {
+        margin-bottom: 0px;
+
+    }
+    .el-col {
+        border-radius: 0px;
+    }
+    .bg-purple-dark {
+        background: #99a9bf;
+    }
+    .bg-purple {
+        background: #d3dce6;
+    }
+    .bg-purple-light {
+        background: #e5e9f2;
+    }
+    .grid-content {
+        border-radius: 4px;
+        min-height: 36px;
+    }
+    .row-bg {
+        padding: 5px 0;
+        background-color: #f9fafc;
+    }
+</style>
