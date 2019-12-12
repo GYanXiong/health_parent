@@ -6,4 +6,5 @@ jdbc.properties
 applicationContext-service.xml
 springmvc.xml
 spring-redis.xml
+applicationContext-redis.xml
 
