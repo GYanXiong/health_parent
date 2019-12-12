@@ -28,7 +28,7 @@
                     <el-breadcrumb-item>会员数量</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
-            <div class="excelTitle" >
+            <div class="excelTitle">
                 <br>
                 <el-row :gutter="5">
                     <el-col :span="5">
@@ -97,50 +97,54 @@
                     }]
                 }
             },
-            methods:{
-                submitOrder(){
-                    // 基于准备好的dom，初始化echarts实例
-                    var myChart1 = echarts.init(document.getElementById('chart1'));
+            methods: {
+                submitOrder() {
+                    if (this.value2 == "" || this.value2 == null) {
+                        this.$message.error("日期不能为空！")
+                    } else {
+                        // 基于准备好的dom，初始化echarts实例
+                        var myChart1 = echarts.init(document.getElementById('chart1'));
 
-                    // 使用刚指定的配置项和数据显示图表。
-                    //myChart.setOption(option);
-                    var param ={
-                        minOrderDate: this.value2[0],
-                        maxOrderDate: this.value2[1]
-                    };
-                    axios.post("/report/getMemberDateReport.do",param).then((res)=>{
-                        /**
-                         *  返回Result(flag,message,data)
-                         *    data 封装 Map
-                         *      map集合的key           map集合的value
-                         *         months               List<String>
-                         *         memberCount          List<Integer>
-                         */
-                        myChart1.setOption(
-                            {
-                                title: {
-                                    text: '会员数量'
-                                },
-                                tooltip: {},
-                                legend: {
-                                    data:['数量']
-                                },
-                                xAxis: {
-                                    type: 'category',
-                                    boundaryGap: false,
-                                    data: res.data.data.months
-                                },
-                                yAxis: {
-                                    type:'value'
-                                },
-                                series: [{
-                                    name: '数量',
-                                    type: 'line',
-                                    data: res.data.data.memberCount,
-                                    areaStyle: {}
-                                }]
-                            });
-                    });
+                        // 使用刚指定的配置项和数据显示图表。
+                        //myChart.setOption(option);
+                        var param = {
+                            minOrderDate: this.value2[0],
+                            maxOrderDate: this.value2[1]
+                        };
+                        axios.post("/report/getMemberDateReport.do", param).then((res) => {
+                            /**
+                             *  返回Result(flag,message,data)
+                             *    data 封装 Map
+                             *      map集合的key           map集合的value
+                             *         months               List<String>
+                             *         memberCount          List<Integer>
+                             */
+                            myChart1.setOption(
+                                {
+                                    title: {
+                                        text: '会员数量'
+                                    },
+                                    tooltip: {},
+                                    legend: {
+                                        data: ['数量']
+                                    },
+                                    xAxis: {
+                                        type: 'category',
+                                        boundaryGap: false,
+                                        data: res.data.data.months
+                                    },
+                                    yAxis: {
+                                        type: 'value'
+                                    },
+                                    series: [{
+                                        name: '数量',
+                                        type: 'line',
+                                        data: res.data.data.memberCount,
+                                        areaStyle: {}
+                                    }]
+                                });
+                        });
+                    }
                 }
             }
         });
@@ -151,22 +155,28 @@
         margin-bottom: 0px;
 
     }
+
     .el-col {
         border-radius: 0px;
     }
+
     .bg-purple-dark {
         background: #99a9bf;
     }
+
     .bg-purple {
         background: #d3dce6;
     }
+
     .bg-purple-light {
         background: #e5e9f2;
     }
+
     .grid-content {
         border-radius: 4px;
         min-height: 36px;
     }
+
     .row-bg {
         padding: 5px 0;
         background-color: #f9fafc;
