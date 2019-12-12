@@ -96,15 +96,16 @@
             )
             //根据用户权限 加载菜单
             axios.post("/menu/getMenus.do").then((result) => {
-                this.menuList = result.data
+                if (result.data.flag){
+                    this.menuList = result.data.data
+                }else{
+                    this.$message.error(result.data.message)
+                }
             }).catch(() => {
                 alert("发生错误")
             })
-
-
         }
     });
-
     $(function () {
         var wd = 200;
         $(".el-main").css('width', $('body').width() - wd + 'px');

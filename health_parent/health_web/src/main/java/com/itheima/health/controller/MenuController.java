@@ -1,6 +1,7 @@
 package com.itheima.health.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.itheima.health.constant.MessageConstant;
 import com.itheima.health.entity.Result;
 import com.itheima.health.pojo.Menu;
 import com.itheima.health.service.MenuService;
@@ -23,16 +24,17 @@ public class MenuController {
 
     //根据用户权限加载页面菜单项
     @RequestMapping("/getMenus")
-    private List<Menu> getMenus(){
+    private Result getMenus() {
         //获取该登录的用户
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //根据用户的角色获取应有的权限列表
-         List<Menu>  menu = menuService.getMenus(user.getUsername());
-        for (Menu menu1 : menu) {
-            System.out.println(menu1);
-        }
+        List<Menu> menu = menuService.getMenus(user.getUsername());
 
-        return menu;
+        if (menu.size() > 0) {
+            return new Result(true, null, menu);
+        } else {
+            return new Result(false, MessageConstant.USER_NO_ROLE);
+        }
     }
 
 
