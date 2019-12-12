@@ -12,7 +12,6 @@
                http://www.springframework.org/schema/aop/spring-aop.xsd
                http://www.springframework.org/schema/tx
                http://www.springframework.org/schema/tx/spring-tx.xsd">
-    <context:property-placeholder location="classpath:redis.properties"></context:property-placeholder>
     <!--1：创建Reids的连接池配置-->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxTotal" value="200"/>
