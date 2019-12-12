@@ -14,4 +14,10 @@ public class RedisConstant {
 
     // 保存套餐的时候，采用Redis的key
     public static final String SETMEAL_PIC_DB_RESOURCE = "setmealPicDbResource";
+
+    // 使用订单id，查询订单的详情的key
+    public static final String ORDER_HASH_RESOURCE =  "healthOrderMap";
+
+    // 使用套餐id，查询套餐的详情的key
+    public static final String SETMEAL_HASH_RESOURCE =  "healthSetmealMap";
 }
