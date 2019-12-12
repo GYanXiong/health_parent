@@ -3,4 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.itheima.health.dao.MenuDao">
 
+    <select id="findParentMenuByRoleId" resultType="menu" parameterType="int">
+        SELECT m.* FROM t_menu m JOIN t_role_menu rm ON m.id = rm.menu_id WHERE m.parentMenuId IS NULL AND rm.role_id = #{id}
+    </select>
+
+    <select id="findSonMenuByRoleId" resultType="menu">
+        SELECT m.* FROM t_menu m JOIN t_role_menu rm ON m.id = rm.menu_id WHERE m.parentMenuId = #{parentId} AND rm.role_id = #{roleId}
+    </select>
+
 </mapper>

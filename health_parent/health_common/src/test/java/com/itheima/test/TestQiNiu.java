@@ -24,38 +24,38 @@ import java.io.UnsupportedEncodingException;
 public class TestQiNiu {
 
     // 测试通过路径完成上传
-    @Test
-    public void update(){
-        //构造一个带指定 Region 对象的配置类
-        Configuration cfg = new Configuration(Zone.zone0());
-        //...其他参数参考类注释
-        UploadManager uploadManager = new UploadManager(cfg);
-        //...生成上传凭证，然后准备上传
-        String accessKey = "liyKTcQC5TP1LrhgZH6Xem8zqMXbEtVgfAINP53v";
-        String secretKey = "f5zpuzKAPceEMG77-EK3XbwqgOBRDXDawG4UHRta";
-        String bucket = "itcast-health80";
-        //如果是Windows情况下，格式是 D:\\qiniu\\test.png
-        String localFilePath = "D:/123.jpg";
-        //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = null;
-        Auth auth = Auth.create(accessKey, secretKey);
-        String upToken = auth.uploadToken(bucket);
-        try {
-            Response response = uploadManager.put(localFilePath, key, upToken);
-            //解析上传成功的结果
-            DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-            System.out.println(putRet.key); // 存放到服务器的图片名称
-            System.out.println(putRet.hash);
-        } catch (QiniuException ex) {
-            Response r = ex.response;
-            System.err.println(r.toString());
-            try {
-                System.err.println(r.bodyString());
-            } catch (QiniuException ex2) {
-                //ignore
-            }
-        }
-    }
+    // @Test
+    // public void update(){
+    //     //构造一个带指定 Region 对象的配置类
+    //     Configuration cfg = new Configuration(Zone.zone0());
+    //     //...其他参数参考类注释
+    //     UploadManager uploadManager = new UploadManager(cfg);
+    //     //...生成上传凭证，然后准备上传
+    //     String accessKey = "liyKTcQC5TP1LrhgZH6Xem8zqMXbEtVgfAINP53v";
+    //     String secretKey = "f5zpuzKAPceEMG77-EK3XbwqgOBRDXDawG4UHRta";
+    //     String bucket = "itcast-health80";
+    //     //如果是Windows情况下，格式是 D:\\qiniu\\test.png
+    //     String localFilePath = "D:/123.jpg";
+    //     //默认不指定key的情况下，以文件内容的hash值作为文件名
+    //     String key = null;
+    //     Auth auth = Auth.create(accessKey, secretKey);
+    //     String upToken = auth.uploadToken(bucket);
+    //     try {
+    //         Response response = uploadManager.put(localFilePath, key, upToken);
+    //         //解析上传成功的结果
+    //         DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+    //         System.out.println(putRet.key); // 存放到服务器的图片名称
+    //         System.out.println(putRet.hash);
+    //     } catch (QiniuException ex) {
+    //         Response r = ex.response;
+    //         System.err.println(r.toString());
+    //         try {
+    //             System.err.println(r.bodyString());
+    //         } catch (QiniuException ex2) {
+    //             //ignore
+    //         }
+    //     }
+    // }
 
     // 使用字节数组
     @Test

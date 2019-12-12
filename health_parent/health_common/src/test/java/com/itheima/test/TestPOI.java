@@ -29,50 +29,50 @@ public class TestPOI {
      */
 
     // （1）从Excel文件中读取数据
-    @Test
-    public void readExcel() throws IOException {
-        // 1：创建工作簿对象
-        XSSFWorkbook workbook = new XSSFWorkbook("D:\\hello.xlsx");
-        // 2：获取工作表对象
-        XSSFSheet sheet = workbook.getSheetAt(0); // 0表示第1个
-        // 3：遍历工作表对象，获得行对象
-        for (Row row : sheet) {
-            // 4：遍历行对象，获得单元格对象
-            for (Cell cell : row) {
-                // 5：获取数据
-                String value = cell.getStringCellValue();
-                System.out.println(value);
-            }
-        }
-        // 6：关闭
-        workbook.close();
-    }
-
-    // 还有一种方式就是获取工作表最后一个行号，从而根据行号获得行对象，通过行获取最后一个单元格索引，从而根据单元格索引获取每行的一个单元格对象，代码如下：
-    // 问题：读取一些空白行（读取excel数据的时候，虽然表格中没有数据，不能添加样式，读取excel的时候，会读到空白行）
-    @Test
-    public void readExcel_2() throws IOException {
-        // 1：创建工作簿对象
-        XSSFWorkbook workbook = new XSSFWorkbook("D:\\hello.xlsx");
-        // 2：获取工作表对象
-        XSSFSheet sheet = workbook.getSheetAt(0); // 0表示第1个
-        // 3：读取最后一行的行号，通过行号获取每个行对象
-        int rows = sheet.getLastRowNum();
-        System.out.println(rows);
-        for(int i=0;i<=rows;i++){
-            XSSFRow row = sheet.getRow(i);
-            // 4：读取当前行最后一个单元格列号，通过列号获取每个单元格对象
-            short cellNum = row.getLastCellNum();
-            //System.out.println(cellNum);
-            for(short j=0;j<cellNum;j++){
-                XSSFCell cell = row.getCell(j);
-                String value = cell.getStringCellValue();
-                System.out.println(value);
-            }
-        }
-        // 6：关闭
-        workbook.close();
-    }
+    // @Test
+    // public void readExcel() throws IOException {
+    //     // 1：创建工作簿对象
+    //     XSSFWorkbook workbook = new XSSFWorkbook("D:\\Git\\health_parent\\health_parent\\health_web\\src\\main\\webapp\\template\\ordersetting_template.xlsx");
+    //     // 2：获取工作表对象
+    //     XSSFSheet sheet = workbook.getSheetAt(0); // 0表示第1个
+    //     // 3：遍历工作表对象，获得行对象
+    //     for (Row row : sheet) {
+    //         // 4：遍历行对象，获得单元格对象
+    //         for (Cell cell : row) {
+    //             // 5：获取数据
+    //             String value = cell.getStringCellValue();
+    //             System.out.println(value);
+    //         }
+    //     }
+    //     // 6：关闭
+    //     workbook.close();
+    // }
+    //
+    // // 还有一种方式就是获取工作表最后一个行号，从而根据行号获得行对象，通过行获取最后一个单元格索引，从而根据单元格索引获取每行的一个单元格对象，代码如下：
+    // // 问题：读取一些空白行（读取excel数据的时候，虽然表格中没有数据，不能添加样式，读取excel的时候，会读到空白行）
+    // @Test
+    // public void readExcel_2() throws IOException {
+    //     // 1：创建工作簿对象
+    //     XSSFWorkbook workbook = new XSSFWorkbook("D:\\Git\\health_parent\\health_parent\\health_web\\src\\main\\webapp\\template\\ordersetting_template.xlsx");
+    //     // 2：获取工作表对象
+    //     XSSFSheet sheet = workbook.getSheetAt(0); // 0表示第1个
+    //     // 3：读取最后一行的行号，通过行号获取每个行对象
+    //     int rows = sheet.getLastRowNum();
+    //     System.out.println(rows);
+    //     for(int i=0;i<=rows;i++){
+    //         XSSFRow row = sheet.getRow(i);
+    //         // 4：读取当前行最后一个单元格列号，通过列号获取每个单元格对象
+    //         short cellNum = row.getLastCellNum();
+    //         //System.out.println(cellNum);
+    //         for(short j=0;j<cellNum;j++){
+    //             XSSFCell cell = row.getCell(j);
+    //             String value = cell.getStringCellValue();
+    //             System.out.println(value);
+    //         }
+    //     }
+    //     // 6：关闭
+    //     workbook.close();
+    // }
 
     // （2）向Excel文件中写数据
     // 使用POI可以在内存中创建一个Excel文件并将数据写入到这个文件，最后通过输出流将内存中的Excel文件下载到磁盘
