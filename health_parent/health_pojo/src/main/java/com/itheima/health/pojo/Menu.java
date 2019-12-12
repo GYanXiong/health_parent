@@ -18,6 +18,28 @@ public class Menu implements Serializable{
     private List<Menu> children = new ArrayList<>();//子菜单集合
     private Integer parentMenuId;//父菜单id
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id) &&
+                Objects.equals(name, menu.name) &&
+                Objects.equals(linkUrl, menu.linkUrl) &&
+                Objects.equals(path, menu.path) &&
+                Objects.equals(priority, menu.priority) &&
+                Objects.equals(description, menu.description) &&
+                Objects.equals(icon, menu.icon) &&
+                Objects.equals(roles, menu.roles) &&
+                Objects.equals(children, menu.children) &&
+                Objects.equals(parentMenuId, menu.parentMenuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, linkUrl, path, priority, description, icon, roles, children, parentMenuId);
+    }
+
     public Integer getId() {
         return id;
     }
@@ -97,4 +119,5 @@ public class Menu implements Serializable{
     public void setParentMenuId(Integer parentMenuId) {
         this.parentMenuId = parentMenuId;
     }
+
 }

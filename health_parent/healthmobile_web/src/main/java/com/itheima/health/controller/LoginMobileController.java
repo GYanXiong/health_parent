@@ -38,6 +38,7 @@ public class LoginMobileController {
     // 手机快速登录
     @RequestMapping(value = "/check")
     public Result check(@RequestBody Map map, HttpServletResponse response){
+
         try {
             // * 获取手机号和验证码（页面）
             String telephone = (String)map.get("telephone");

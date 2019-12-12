@@ -32,7 +32,7 @@ public class TestPOI {
     @Test
     public void readExcel() throws IOException {
         // 1：创建工作簿对象
-        XSSFWorkbook workbook = new XSSFWorkbook("D:\\hello.xlsx");
+        XSSFWorkbook workbook = new XSSFWorkbook("D:\\Git\\health_parent\\health_parent\\health_web\\src\\main\\webapp\\template\\ordersetting_template.xlsx");
         // 2：获取工作表对象
         XSSFSheet sheet = workbook.getSheetAt(0); // 0表示第1个
         // 3：遍历工作表对象，获得行对象
@@ -53,7 +53,7 @@ public class TestPOI {
     @Test
     public void readExcel_2() throws IOException {
         // 1：创建工作簿对象
-        XSSFWorkbook workbook = new XSSFWorkbook("D:\\hello.xlsx");
+        XSSFWorkbook workbook = new XSSFWorkbook("D:\\Git\\health_parent\\health_parent\\health_web\\src\\main\\webapp\\template\\ordersetting_template.xlsx");
         // 2：获取工作表对象
         XSSFSheet sheet = workbook.getSheetAt(0); // 0表示第1个
         // 3：读取最后一行的行号，通过行号获取每个行对象

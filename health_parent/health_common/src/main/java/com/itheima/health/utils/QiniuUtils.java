@@ -14,9 +14,9 @@ import com.qiniu.util.Auth;
  * 七牛云工具类
  */
 public class QiniuUtils {
-    public  static String accessKey = "liyKTcQC5TP1LrhgZH6Xem8zqMXbEtVgfAINP53v";
-    public  static String secretKey = "f5zpuzKAPceEMG77-EK3XbwqgOBRDXDawG4UHRta";
-    public  static String bucket = "itcast-health80";
+    public  static String accessKey = "MB9fzQ3QdyTFDjoShO7sOu2O4C9wAEtpXXA2ADkU";
+    public  static String secretKey = "ZTEp09ItZ3j5t6K4m4oOMu7puInclJqrT_qroj";
+    public  static String bucket = "gyx-qiniu";
 
     // 后续不用
     public static void upload2Qiniu(String filePath,String fileName){
@@ -82,4 +82,5 @@ public class QiniuUtils {
             System.err.println(ex.response.toString());
         }
     }
+
 }
