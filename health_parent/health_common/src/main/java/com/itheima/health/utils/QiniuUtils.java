@@ -14,6 +14,7 @@ import com.qiniu.util.Auth;
  * 七牛云工具类
  */
 public class QiniuUtils {
+
     public  static String accessKey = "MB9fzQ3QdyTFDjoShO7sOu2O4C9wAEtpXXA2ADkU";
     public  static String secretKey = "ZTEp09ItZ3j5t6K4m4oOMu7puInclJqrT_qroj";
     public  static String bucket = "gyx-qiniu";
