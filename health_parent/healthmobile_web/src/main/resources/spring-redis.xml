@@ -13,23 +13,19 @@
                http://www.springframework.org/schema/tx
                http://www.springframework.org/schema/tx/spring-tx.xsd">
     <context:property-placeholder location="classpath:redis.properties"></context:property-placeholder>
-    <!--Jedis连接池的相关配置-->
+    <!--1：创建Reids的连接池配置-->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <property name="maxTotal">
-            <value>${redis.pool.maxActive}</value>
-        </property>
-        <property name="maxIdle">
-            <value>${redis.pool.maxIdle}</value>
-        </property>
+        <property name="maxTotal" value="200"/>
+        <property name="maxIdle" value="50"/>
         <property name="testOnBorrow" value="true"/>
         <property name="testOnReturn" value="true"/>
     </bean>
-
+    <!--2：创建Redis的连接池-->
     <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
         <constructor-arg name="poolConfig" ref="jedisPoolConfig" />
-        <constructor-arg name="host" value="${redis.host}" />
-        <constructor-arg name="port" value="${redis.port}" type="int" />
-        <constructor-arg name="timeout" value="${redis.timeout}" type="int" />
-        <constructor-arg name="password" value="${redis.password}"></constructor-arg>
+        <constructor-arg name="host" value="182.61.2.36" />
+        <constructor-arg name="port" value="6379" type="int" />
+        <constructor-arg name="timeout" value="30000" type="int" />
+        <constructor-arg name="password" value="zhouzheng:399"></constructor-arg>
     </bean>
 </beans>
