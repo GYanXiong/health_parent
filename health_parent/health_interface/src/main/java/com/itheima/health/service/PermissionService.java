@@ -1,22 +1,20 @@
 package com.itheima.health.service;
 
 import com.itheima.health.entity.PageResult;
-import com.itheima.health.pojo.Menu;
+import com.itheima.health.pojo.Permission;
 
 import java.util.List;
 
-public interface MenuService {
-    List<Menu> getMenus(String username);
-
-    void add(Menu menu);
+public interface PermissionService {
+    void add(Permission permission);
 
     PageResult findPage(Integer currentPage, Integer pageSize, String queryString);
 
     void deleteById(Integer id);
 
-    Menu findById(Integer id);
+    Permission findById(Integer id);
 
-    void edit(Menu menu);
+    void edit(Permission permission);
 
-    List<Menu> findAll();
+    List<Permission> findAll();
 }

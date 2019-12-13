@@ -1,9 +1,12 @@
 package com.itheima.health.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.itheima.health.dao.MenuDao;
 import com.itheima.health.dao.RoleDao;
 import com.itheima.health.dao.UserDao;
+import com.itheima.health.entity.PageResult;
 import com.itheima.health.pojo.Menu;
 import com.itheima.health.pojo.Role;
 import com.itheima.health.pojo.User;
@@ -63,5 +66,47 @@ public class MenuServiceImpl implements MenuService {
         list.addAll(menus);
 
         return list;
+    }
+    @Override
+    public void add(Menu menu) {
+        menuDao.add(menu);
+    }
+
+    @Override
+    public PageResult findPage(Integer currentPage, Integer pageSize, String queryString) {
+        // 使用Page完成封装
+        // 1：初始化分页的参数
+        PageHelper.startPage(currentPage,pageSize);
+        // 2：查询
+        Page<Menu> page = menuDao.findByCondition(queryString);
+        // 3：封装PageResult数据
+        return new PageResult(page.getTotal(),page.getResult());
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        // 使用菜单的id，查询中间表，判断是否存在数据
+        long count = menuDao.findRoleAndMenuCountByMenuId(id);
+        // 存在数据
+        if(count>0){
+            throw new RuntimeException("当前菜单在中间表中存在数据不能删除！");
+        }
+        // 删除菜单
+        menuDao.deleteById(id);
+    }
+
+    @Override
+    public Menu findById(Integer id) {
+        return menuDao.findById(id);
+    }
+
+    @Override
+    public void edit(Menu menu) {
+        menuDao.edit(menu);
+    }
+
+    @Override
+    public List<Menu> findAll() {
+        return menuDao.findAll();
     }
 }

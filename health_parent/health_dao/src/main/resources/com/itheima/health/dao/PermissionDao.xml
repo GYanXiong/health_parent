@@ -7,4 +7,51 @@
     <select id="findPermissionsByRoleId" parameterType="int" resultType="permission">
         SELECT p.* FROM t_permission p,t_role_permission rp WHERE p.id = rp.permission_id AND rp.role_id = #{roleId}
     </select>
+
+    <!--新增权限-->
+    <insert id="add" parameterType="permission">
+        insert into t_permission(name,keyword) values (#{name},#{keyword})
+    </insert>
+
+    <!--分页查询：注意使用动态sql获取参数的时候，需要使用value-->
+    <select id="findByCondition" parameterType="string" resultType="Permission">
+        SELECT * FROM t_permission
+        <if test="value!=null and value.length>0">
+            WHERE name like concat('%',#{value},'%') OR keyword = #{value}
+        </if>
+    </select>
+
+    <!--删除权限-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_permission where id = #{id}
+    </delete>
+
+    <!--使用权限id，查询角色和权限的中间表，判断是否存在数据-->
+    <select id="findRoleAndPermissionCountByPermissionId" parameterType="int" resultType="long">
+        SELECT COUNT(*) FROM t_role_permission WHERE permission_id = #{permissionId}
+    </select>
+
+    <!--ID查询权限-->
+    <select id="findById" parameterType="int" resultType="permission">
+        select * from t_permission where id = #{id}
+    </select>
+
+    <!--编辑权限-->
+    <update id="edit" parameterType="permission">
+        update t_permission
+        <set>
+            <if test="name !=null and name.length>0">
+                name =#{name},
+            </if>
+            <if test="keyword !=null and keyword.length>0">
+                keyword =#{keyword},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--查询所有权限-->
+    <select id="findAll" resultType="permission">
+        select * from t_permission
+    </select>
 </mapper>

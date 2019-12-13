@@ -11,4 +11,56 @@
         SELECT m.* FROM t_menu m JOIN t_role_menu rm ON m.id = rm.menu_id WHERE m.parentMenuId = #{parentId} AND rm.role_id = #{roleId}
     </select>
 
+    <!--新增菜单-->
+    <insert id="add" parameterType="menu">
+        insert into t_menu(name,linkUrl,path,priority,description,icon,parentMenuId) values (#{name},#{linkUrl},#{path},#{priority},#{description},#{icon},#{parentMenuId})
+    </insert>
+
+    <!--分页查询：注意使用动态sql获取参数的时候，需要使用value-->
+    <select id="findByCondition" parameterType="string" resultType="menu">
+        SELECT * FROM t_menu
+        <if test="value!=null and value.length>0">
+            WHERE name like concat('%',#{value},'%')
+        </if>
+    </select>
+
+    <!--删除检查项-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_menu where id = #{id}
+    </delete>
+
+    <!--使用菜单id，查询角色和菜单的中间表，判断是否存在数据-->
+    <select id="findRoleAndMenuCountByMenuId" parameterType="int" resultType="long">
+        SELECT COUNT(*) FROM t_role_menu WHERE menu_id = #{menuId}
+    </select>
+
+    <!--ID查询检查项-->
+    <select id="findById" parameterType="int" resultType="menu">
+        select * from t_menu where id = #{id}
+    </select>
+
+    <!--编辑菜单（更新）-->
+    <update id="edit" parameterType="menu">
+        update t_menu
+        <set>
+            <if test="name!=null and name.length>0">
+                name = #{name},
+            </if>
+            <if test="linkUrl!=null">
+                linkUrl = #{linkUrl},
+            </if>
+            <if test="priority!=null">
+                priority = #{priority},
+            </if>
+            <if test="description!=null">
+                description = #{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--查询所有菜单-->
+    <select id="findAll" resultType="menu">
+        select * from t_menu
+    </select>
 </mapper>
