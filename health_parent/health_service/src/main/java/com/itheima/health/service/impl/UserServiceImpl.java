@@ -8,6 +8,7 @@ import com.itheima.health.entity.PageResult;
 import com.itheima.health.pojo.User;
 import com.itheima.health.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -38,7 +39,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public void add(User user, Integer[] roleIds) {
         //1：保存用户，返回用户ID，封装到user中的id属性
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        // 保存到数据库，是一个加密的结果
+        String s1 = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(s1);
+        System.out.println(s1);
+
         userDao.add(user);
+
         //2：遍历循环，关联中间表
         if(roleIds!=null && roleIds.length>0){
             setUserAndRole(user.getId(),roleIds);

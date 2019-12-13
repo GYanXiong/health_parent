@@ -22,3 +22,4 @@ public interface RoleService {
 
     void deleteById(Role role, Integer id);
 }
+
