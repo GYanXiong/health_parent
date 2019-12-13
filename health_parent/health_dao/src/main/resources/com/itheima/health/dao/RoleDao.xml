@@ -11,4 +11,93 @@
     <select id="findRolesByUserId" parameterType="int" resultMap="roleMap">
         SELECT r.* FROM t_role r,t_user_role ur WHERE r.id = ur.role_id AND ur.user_id = #{userId}
     </select>
+
+    <!--新增角色，同时将新增数据的角色的id封装到role中的id属性-->
+    <insert id="add" parameterType="role">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into t_role(name,keyword,description) values(#{name},#{keyword},#{description})
+    </insert>
+
+    <!--新增权限和角色的中间表，使用Map-->
+    <insert id="addRoleAndPermissio" parameterType="map">
+        insert into t_role_permission(role_id,permission_id) values(#{roleId},#{permissionId})
+    </insert>
+
+    <!--分页条件查询-->
+    <select id="findByCondition" parameterType="string" resultType="role">
+        select * from t_role
+        <if test="value!=null and value.length>0">
+            where keyword = #{value} or name like concat('%',#{value},'%')
+        </if>
+    </select>
+
+    <!--主键ID查询-->
+    <select id="findById" parameterType="int" resultType="role">
+        select * from t_role where id = #{id}
+    </select>
+
+    <!--使用角色id，查询角色对应的权限ID集合-->
+    <select id="findPermissionIdsByRoleId" parameterType="int" resultType="int">
+        SELECT permission_id FROM t_role_permission WHERE role_id = #{croleId}
+    </select>
+
+    <!--更新角色-->
+    <update id="edit" parameterType="role">
+        update t_role
+        <set>
+            <if test="name!=null and name.length>0">
+                name = #{name},
+            </if>
+            <if test="keyword!=null and keyword.length>0">
+                keyword = #{keyword},
+            </if>
+            <if test="description!=null and description.length>0">
+                description = #{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--使用角色id，删除角色和权限的中间表数据-->
+    <delete id="deleteRoleAndPermissionByRoleId" parameterType="int">
+        delete from t_role_permission where role_id = #{roleId}
+    </delete>
+
+    <!--查询所有-->
+    <select id="findAll" resultType="role">
+        select * from t_role
+    </select>
+
+
+    <!--使用角色id，删除角色和菜单的中间表数据-->
+    <delete id="deleteRoleAndMenuByRoleId" parameterType="int">
+        delete from t_role_menu where role_id = #{roleId}
+    </delete>
+
+    <!--使用角色id，查询角色对应的菜单ID集合-->
+    <select id="findMenuIdsByRoleId" parameterType="int" resultType="int">
+        SELECT menu_id FROM t_role_menu WHERE role_id = #{roleId}
+    </select>
+
+    <!--新增菜单和角色的中间表，使用Map-->
+    <insert id="addRoleAndMenu" parameterType="map">
+        insert into t_role_menu(role_id,menu_id) values(#{roleId},#{menuId})
+    </insert>
+
+    <!--删除角色-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_role where id = #{id}
+    </delete>
+
+    <!--使用角色id，查询角色和权限的中间表，判断是否存在数据-->
+    <select id="findRoleAndPermissionCountByRoleId" parameterType="int" resultType="long">
+        SELECT COUNT(*) FROM t_role_permission WHERE role_id = #{roleId}
+    </select>
+
+    <!--使用角色id，查询角色和菜单的中间表，判断是否存在数据-->
+    <select id="findRoleAndMenuCountByRoleId" parameterType="int" resultType="long">
+        SELECT COUNT(*) FROM t_role_menu WHERE role_id = #{roleId}
+    </select>
 </mapper>

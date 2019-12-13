@@ -91,7 +91,6 @@
         <result property="remark" column="remark"></result>
         <result property="attention" column="attention"></result>
         <collection property="checkItems" column="id" select="com.itheima.health.dao.CheckItemDao.findCheckItemsByCheckGroupId"></collection>
-
     </resultMap>
     <select id="findCheckGroupsBySetmealId" parameterType="int" resultMap="checkGroupMap">
         SELECT * FROM t_checkgroup WHERE id IN (SELECT checkgroup_id FROM t_setmeal_checkgroup WHERE setmeal_id = #{setmealId})

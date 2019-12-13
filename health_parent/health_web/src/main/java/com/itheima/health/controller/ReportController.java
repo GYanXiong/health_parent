@@ -44,6 +44,33 @@ public class ReportController {
     @Reference
     ReportService reportService;
 
+    //统计会员年龄区间占比
+    @RequestMapping(value = "/getMemberReport_age")
+    public Result getMemberReport_age() {
+        try {
+            Map memberMap = memberService.getMemberReport_age();
+
+            return new Result(true, MessageConstant.GET_MEMBER_COUNT_REPORT_SUCCESS, memberMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.GET_MEMBER_COUNT_REPORT_FAIL);
+        }
+    }
+
+    //统计会员男女比例的饼图
+    @RequestMapping(value = "/getMemberReport_sex")
+    public Result getMemberReport_sex() {
+        try {
+
+            Map memberMap = memberService.getMemberReport_sex();
+
+            return new Result(true, MessageConstant.GET_MEMBER_COUNT_REPORT_SUCCESS, memberMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.GET_MEMBER_COUNT_REPORT_FAIL);
+        }
+    }
+
     // 统计会员注册的折线图
     @RequestMapping(value = "/getMemberReport")
     public Result getMemberReport(){
@@ -221,4 +248,6 @@ public class ReportController {
             return new Result(false,MessageConstant.GET_MEMBER_NUMBER_REPORT_FAIL);
         }
     }
+
+
 }
