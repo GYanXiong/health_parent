@@ -14,4 +14,8 @@ public interface MemberService {
     List<Integer> findMemberCountByRegTime(List<String> months);
 
     Integer findByCurrentMemberCount(Map countMap);
+
+    Map getMemberReport_age();
+
+    Map getMemberReport_sex();
 }
