@@ -11,11 +11,8 @@ import com.itheima.health.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
 import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service(interfaceClass = MenuService.class)
 @Transactional
@@ -61,6 +58,15 @@ public class MenuServiceImpl implements MenuService {
 
         List<Menu> list = new ArrayList<>();
         list.addAll(menus);
+
+        Collections.sort(list, new Comparator<Menu>() {
+            @Override
+            public int compare(Menu o1, Menu o2) {
+                Integer i = Integer.parseInt(o1.getPath());
+                Integer ii = Integer.parseInt(o2.getPath());
+                return i - ii ;
+            }
+        });
 
         return list;
     }

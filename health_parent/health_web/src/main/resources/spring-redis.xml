@@ -27,4 +27,5 @@
         <constructor-arg name="timeout" value="30000" type="int" />
         <constructor-arg name="password" value="zhouzheng:399"></constructor-arg>
     </bean>
+
 </beans>
