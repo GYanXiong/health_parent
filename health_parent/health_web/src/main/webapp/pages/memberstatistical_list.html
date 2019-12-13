@@ -63,7 +63,7 @@
             <div class="app-container">
                 <div class="box">
                     <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
-                    <div id="chart1" style="height:600px;"></div>
+                    <div id="chart5" style="height:600px;"></div>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
         var vue = new Vue({
             el: "#app",
             data: {
-                value2: [],
+                value2: [new Date(new Date().getFullYear(), 0),new Date()],
                 pickerOptions: {
                     shortcuts: [{
                         text: '本月',
@@ -102,9 +102,6 @@
                     if (this.value2 == "" || this.value2 == null) {
                         this.$message.error("日期不能为空！")
                     } else {
-                        // 基于准备好的dom，初始化echarts实例
-                        var myChart1 = echarts.init(document.getElementById('chart1'));
-
                         // 使用刚指定的配置项和数据显示图表。
                         //myChart.setOption(option);
                         var param = {
@@ -112,6 +109,8 @@
                             maxOrderDate: this.value2[1]
                         };
                         axios.post("/report/getMemberDateReport.do", param).then((res) => {
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart1 = echarts.init(document.getElementById('chart5'));
                             /**
                              *  返回Result(flag,message,data)
                              *    data 封装 Map
@@ -146,6 +145,9 @@
                         });
                     }
                 }
+            },
+            created(){
+                this.submitOrder()
             }
         });
     </script>
