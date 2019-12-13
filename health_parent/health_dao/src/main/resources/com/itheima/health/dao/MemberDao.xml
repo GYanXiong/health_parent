@@ -44,4 +44,16 @@
     <select id="findByCurrentMemberCount" parameterType="map" resultType="int">
         SELECT COUNT(*) FROM t_member WHERE regTime BETWEEN #{begin} AND #{end}
     </select>
+
+    <select id="findladiesCount" resultType="int">
+        select count(*) from t_member where sex = 1
+    </select>
+
+    <select id="findgentlemenCount" resultType="int">
+        select count(*) from t_member where sex = 2
+    </select>
+
+    <select id="findMemberAge" resultType="date">
+        SELECT birthday FROM t_member WHERE birthday IS NOT NULL
+    </select>
 </mapper>
