@@ -21,4 +21,10 @@ public class RedisConstant {
     // 使用套餐id，查询套餐的详情的key
     public static final String SETMEAL_HASH_RESOURCE =  "healthSetmealMap";
     public static final String SETMEAL_LIST_RESOURCE =  "healthSetmealList";
+
+    //使用商品分类的redis
+    public static final String CATEGORY_LIST_RESOURCE =  "healthCategoryString";
+
+    //使用商品详情的redis
+    public static final String ITEM_LIST_RESOURCE =  "healthItemHash";
 }

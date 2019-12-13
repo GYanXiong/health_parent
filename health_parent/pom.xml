@@ -253,6 +253,16 @@
                 <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
                 <version>1.0.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.55</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.10</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>

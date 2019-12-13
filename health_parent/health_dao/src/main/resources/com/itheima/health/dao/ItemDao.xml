@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.health.dao.ItemDao">
+    <update id="edit" parameterType="item">
+        UPDATE t_item
+        <set>
+            <if test="name!=null and name.length>0">
+                name=#{name},
+            </if>
+            <if test="descript!=null and descript.length>0">
+                descript=#{descript},
+            </if>
+            <if test="image!=null and image.length>0">
+                image=#{image},
+            </if>
+            <if test="price!=null">
+                price=#{price},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="category_id!=null">
+                category_id=#{category_id},
+            </if>
+            <if test="count!=null">
+                count=#{count},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByCondition" resultType="item">
+        SELECT * FROM t_item
+        <if test="value != null and value.length>0">
+            WHERE name like concat("%",#{value},"%")
+        </if>
+    </select>
+
+    <select id="search" resultType="item">
+        SELECT * FROM t_item WHERE status = 0
+        <if test="value != null and value.length>0">
+            AND name like concat("%",#{value},"%")
+        </if>
+    </select>
+
+</mapper>

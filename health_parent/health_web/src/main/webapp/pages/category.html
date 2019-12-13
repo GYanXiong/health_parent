@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>传智健康</title>
+    <meta name="description" content="传智健康">
+    <meta name="keywords" content="传智健康">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/upload.css">
+    <!-- 引入组件库 -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+
+</head>
+<body class="hold-transition">
+<div id="app">
+    <div class="content-header">
+        <h1>商品管理
+            <small>分类管理</small>
+        </h1>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>商品管理</el-breadcrumb-item>
+            <el-breadcrumb-item>分类管理</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="app-container">
+        <div class="box">
+            <div class="filter-container">
+                <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+            </div>
+            <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                <el-table-column type="index" align="center" label="序号"></el-table-column>
+                <el-table-column label="图片" align="center">
+                    <template slot-scope="scope">
+                        <img :src="scope.row.image" width="100px" height="100px"></el-image>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="name" label="分类名称" align="center"></el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 新增标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="新增分类" :visible.sync="dialogFormVisible">
+                    <el-form ref="dataAddForm" :model="formData" label-position="right"
+                             label-width="100px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="项目名称" prop="name">
+                                    <el-input v-model="formData.name"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="上传图片">
+                                    <el-upload
+                                            class="avatar-uploader"
+                                            action="/category/upload.do"
+                                            :auto-upload="autoUpload"
+                                            name="imgFile"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess"
+                                            :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button type="primary" @click="handleAdd()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
+
+            <!-- 修改标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="新增分类" :visible.sync="dialogFormVisible4Edit">
+                    <el-form ref="dataEditForm" :model="formData" label-position="right"
+                             label-width="100px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="项目名称" prop="name">
+                                    <el-input v-model="formData.name"/>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="上传图片">
+                                    <el-upload
+                                            class="avatar-uploader"
+                                            action="/category/upload.do"
+                                            :auto-upload="autoUpload"
+                                            name="imgFile"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess"
+                                            :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                        <el-button type="primary" @click="handleEdit()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+</body>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            autoUpload: true,//自动上传
+            imageUrl: "",//模型数据，用于上传图片完成后图片预览
+            activeName: 'first',//添加/编辑窗口Tab标签名称
+            pagination: {//分页相关属性
+                currentPage: 1,
+                pageSize: 10,
+                total: 100,
+                queryString: null,
+            },
+            dataList: [],//列表数据
+            formData: {},//表单数据
+            dialogFormVisible: false,//控制添加窗口显示/隐藏
+            dialogFormVisible4Edit: false
+        },
+        created() {
+            this.findAll();
+        },
+        methods: {
+            //文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象
+            handleAvatarSuccess(response, file) {
+                this.imageUrl = "http://q1tb0pccv.bkt.clouddn.com/"+response.data;
+                this.formData.image = this.imageUrl;
+                console.log(this.formData.image);
+            },
+            //上传图片之前执行
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!(isJPG||isPNG)) {
+                    this.$message.error('上传套餐图片只能是 JPG 或者 PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传套餐图片大小不能超过 2MB!');
+                }
+                return (isJPG||isPNG) && isLt2M;
+            },
+            //编辑
+            handleEdit() {
+                axios.post("/category/edit.do", this.formData).then((response) => {
+                    if (!response.data.flag) {
+                        this.$message.error(response.data.message);
+                        return;
+                    } else {
+                        this.$message({
+                            type: "success",
+                            message: response.data.message
+                        })
+                        this.dialogFormVisible4Edit = false;
+                        this.findAll();
+                    }
+                })
+            },
+            //添加
+            handleAdd() {
+                axios.post("/category/add.do", this.formData).then((response) => {
+                    if (!response.data.flag) {
+                        this.$message.error(response.data.message);
+                        return;
+                    } else {
+                        this.$message({
+                            type: "success",
+                            message: response.data.message
+                        })
+                        this.dialogFormVisible = false;
+                        this.findAll();
+                    }
+                })
+            },
+            // 弹出编辑窗口
+            handleUpdate(row) {
+                this.resetForm();
+                console.log(row);
+                axios.get("/category/findById.do?id=" + row.id).then((response) => {
+                    if (!response.data) {
+                        this.$message.error(response.data.message);
+                        this.findAll();
+                        return;
+                    }
+                    this.imageUrl = response.data.image;
+                    this.dialogFormVisible4Edit = true;
+                    this.formData = response.data;
+                });
+            },
+            // 删除
+            handleDelete(row) {
+                this.$confirm('此操作将删除该选项, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get("/category/delete.do?id=" + row.id).then((response) => {
+                        if (response.data.flag) {
+                            this.$message({
+                                message: response.data.message,
+                                type: "success"
+                            })
+                            this.findAll();
+                        } else {
+                            this.$message.error(response.data.message)
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //分页查询
+            findAll() {
+                axios.get("/category/findAll.do").then((response) => {
+                    this.dataList = response.data;
+                });
+            },
+            // 重置表单
+            resetForm() {
+                this.formData = {};
+                this.checkgroupIds = [];
+                this.imageUrl="";
+            },
+            // 弹出添加窗口
+            handleCreate() {
+                this.resetForm();
+                this.dialogFormVisible = true;
+            }
+        }
+    })
+</script>
+</html>

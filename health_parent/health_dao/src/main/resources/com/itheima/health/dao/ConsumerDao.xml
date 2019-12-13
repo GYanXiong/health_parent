@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.health.dao.ConsumerDao">
+    <insert id="add" parameterType="consumer" >
+        <selectKey keyColumn="id" keyProperty="id" order="AFTER" resultType="int">
+            SELECT last_insert_id()
+        </selectKey>
+        INSERT INTO t_consumer(nickName,avatarUrl,gender,phoneNumber,openid,randPass)
+        values(#{nickName},#{avatarUrl},#{gender},#{phoneNumber},#{openid},#{randPass})
+    </insert>
+
+    <update id="edit" parameterType="consumer">
+        UPDATE t_consumer
+        <set>
+            <if test="nickName!=null and nickName.length>0">
+                nickName = #{nickName},
+            </if>
+            <if test="avatarUrl!=null and avatarUrl.length>0">
+                avatarUrl = #{avatarUrl},
+            </if>
+            <if test="gender!=null">
+                gender = #{gender},
+            </if>
+            <if test="phoneNumber!=null and phoneNumber.length>0">
+                phoneNumber = #{phoneNumber},
+            </if>
+            <if test="openid!=null and openid.length>0">
+                openid = #{openid},
+            </if>
+
+        </set>
+    </update>
+
+    <select id="findByIdAndPass" resultType="consumer">
+        SELECT id,nickName,avatarUrl,gender,phoneNumber,openid,randPass FROM t_consumer WHERE id = #{id} AND randPass = #{randPass}
+    </select>
+</mapper>
+
