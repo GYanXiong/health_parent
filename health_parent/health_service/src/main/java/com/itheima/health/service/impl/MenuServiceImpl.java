@@ -53,6 +53,18 @@ public class MenuServiceImpl implements MenuService {
                 }
                 ArrayList<Menu> menus1 = new ArrayList<>();
                 menus1.addAll(son);
+
+                Collections.sort(menus1, new Comparator<Menu>() {
+                    @Override
+                    public int compare(Menu o1, Menu o2) {
+
+                        Integer i = o1.getPriority();
+                        Integer ii = o2.getPriority();
+
+                        return i - ii;
+                    }
+                });
+
                 PatentMenu.setChildren(menus1);
                 if (PatentMenu.getChildren().size() != 0)
                     menus.add(PatentMenu);
@@ -67,12 +79,12 @@ public class MenuServiceImpl implements MenuService {
             public int compare(Menu o1, Menu o2) {
                 Integer i = Integer.parseInt(o1.getPath());
                 Integer ii = Integer.parseInt(o2.getPath());
-                return i - ii ;
+                return i - ii;
             }
         });
-
         return list;
     }
+
     @Override
     public void add(Menu menu) {
         menuDao.add(menu);
@@ -82,11 +94,11 @@ public class MenuServiceImpl implements MenuService {
     public PageResult findPage(Integer currentPage, Integer pageSize, String queryString) {
         // 使用Page完成封装
         // 1：初始化分页的参数
-        PageHelper.startPage(currentPage,pageSize);
+        PageHelper.startPage(currentPage, pageSize);
         // 2：查询
         Page<Menu> page = menuDao.findByCondition(queryString);
         // 3：封装PageResult数据
-        return new PageResult(page.getTotal(),page.getResult());
+        return new PageResult(page.getTotal(), page.getResult());
     }
 
     @Override
@@ -94,7 +106,7 @@ public class MenuServiceImpl implements MenuService {
         // 使用菜单的id，查询中间表，判断是否存在数据
         long count = menuDao.findRoleAndMenuCountByMenuId(id);
         // 存在数据
-        if(count>0){
+        if (count > 0) {
             throw new RuntimeException("当前菜单在中间表中存在数据不能删除！");
         }
         // 删除菜单
