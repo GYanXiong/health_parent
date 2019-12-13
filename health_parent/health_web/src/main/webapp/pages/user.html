@@ -125,6 +125,13 @@
                                     </el-row>
                                     <el-row>
                                         <el-col :span="12">
+                                            <el-form-item label="密码">
+                                                <el-input v-model="formData.password"/>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="12">
                                             <el-form-item label="性别">
                                                 <el-select v-model="formData.gender">
                                                     <el-option label="男" value="1"></el-option>
@@ -149,13 +156,6 @@
                                         <el-col :span="24">
                                             <el-form-item label="说明">
                                                 <el-input v-model="formData.remark" type="textarea"></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="24">
-                                            <el-form-item label="注意事项">
-                                                <el-input v-model="formData.attention" type="textarea"></el-input>
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
@@ -237,13 +237,6 @@
                                             </el-form-item>
                                         </el-col>
                                     </el-row>
-                                    <el-row>
-                                        <el-col :span="24">
-                                            <el-form-item label="注意事项">
-                                                <el-input v-model="formData.attention" type="textarea"></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
                                 </el-form>
                             </el-tab-pane>
                             <el-tab-pane label="角色信息" name="second">
@@ -311,25 +304,25 @@
                 axios.post("/user/edit.do?roleIds="+this.roleIds,this.formData).then((response)=>{
                     // 返回Result(flag,message,data)
                     if(response.data.flag){
-                        // 关闭页面
-                        this.dialogFormVisible4Edit = false;
-                        this.findPage();
-                        this.$message({
-                            type:"success",
-                            message:response.data.message
-                        })
-                    }else{
-                        this.$message({
-                            type:"error",
-                            message:response.data.message
-                        })
-                    }
-                }).catch((error)=>{
+                    // 关闭页面
+                    this.dialogFormVisible4Edit = false;
+                    this.findPage();
+                    this.$message({
+                        type:"success",
+                        message:response.data.message
+                    })
+                }else{
+                    this.$message({
+                        type:"error",
+                        message:response.data.message
+                    })
+                }
+            }).catch((error)=>{
 
                 }).finally(()=>{
                     // 刷新列表页面
                     this.findPage();
-                })
+            })
             },
             //添加
             handleAdd () {
@@ -337,24 +330,21 @@
                 axios.post("/user/add.do?roleIds="+this.roleIds,this.formData).then((response)=>{
                     // 返回值Result(flag,message)
                     if(response.data.flag){
-                        // 新增套餐的窗口关闭
-                        this.dialogFormVisible = false;
-                        this.findPage();
-                        this.$message({
-                            type:"success",
-                            message:response.data.message
-                        })
-                    }else{
-                        this.$message({
-                            type:"error",
-                            message:response.data.message
-                        })
-                    }
-                }).catch((error)=>{
-
-                }).finally(()=>{
-                    // 刷新角色首页
+                    // 新增套餐的窗口关闭
+                    this.dialogFormVisible = false;
                     this.findPage();
+                    this.$message({
+                        type:"success",
+                        message:response.data.message
+                    })
+                }else{
+                    this.$message({
+                        type:"error",
+                        message:response.data.message
+                    })
+                }
+            }).catch((error)=>{
+
                 })
             },
             //分页查询
@@ -368,8 +358,8 @@
                 // 响应结果PageResult
                 axios.post("/user/findPage.do",params).then((response)=>{
                     this.pagination.total = response.data.total;
-                    this.dataList = response.data.rows;
-                })
+                this.dataList = response.data.rows;
+            })
             },
             // 重置表单
             resetForm() {
@@ -390,19 +380,19 @@
                 axios.get("/role/findAll.do").then((response)=>{
                     // 返回Result(flag,message,data)
                     if(response.data.flag){
-                        // 将相应的集合List，存放到tableData中
-                        this.tableData = response.data.data;
-                        this.$message({
-                            type:"success",
-                            message:response.data.message
-                        })
-                    }else{
-                        this.$message({
-                            type:"error",
-                            message:response.data.message
-                        })
-                    }
-                }).catch((error)=>{
+                    // 将相应的集合List，存放到tableData中
+                    this.tableData = response.data.data;
+                    this.$message({
+                        type:"success",
+                        message:response.data.message
+                    })
+                }else{
+                    this.$message({
+                        type:"error",
+                        message:response.data.message
+                    })
+                }
+            }).catch((error)=>{
 
                 })
             },
@@ -417,43 +407,43 @@
                 axios.get("/user/findById.do?id="+row.id).then((response)=>{
                     // 返回Result(flag,message,data)
                     if(response.data.flag){
-                        this.formData = response.data.data;
+                    this.formData = response.data.data;
+                    this.$message({
+                        type:"success",
+                        message:response.data.message
+                    })
+                    // 2：查询所有的角色列表，显示到第二个选项卡中
+                    axios.get("/role/findAll.do").then((response)=>{
+                        // 返回Result(flag,message,data),data:List<role>
+                        if(response.data.flag){
+                        // 显示角色的列表数据
+                        this.tableData = response.data.data;
                         this.$message({
                             type:"success",
                             message:response.data.message
                         })
-                        // 2：查询所有的角色列表，显示到第二个选项卡中
-                        axios.get("/role/findAll.do").then((response)=>{
-                            // 返回Result(flag,message,data),data:List<role>
-                            if(response.data.flag){
-                                // 显示角色的列表数据
-                                this.tableData = response.data.data;
-                                this.$message({
-                                    type:"success",
-                                    message:response.data.message
-                                })
-                                // 3：如果当前用户包含了多个角色，让角色的复选框被选中
-                                // this.roleIds = [28,29,30];
-                                axios.get("/user/findRoleIdsByUserId.do?id="+row.id).then((response)=>{
-                                    // 如果返回Result(flag,message,data)，data封装List<Integer>
-                                    // this.RoleIds = response.data.data;
-                                    // 如果返回List<Integer>
-                                    this.roleIds = response.data;
-                                })
-                            }else{
-                                this.$message.error(response.data.message);
-                            }
-                        }).catch((error)=>{
+                        // 3：如果当前用户包含了多个角色，让角色的复选框被选中
+                        // this.roleIds = [28,29,30];
+                        axios.get("/user/findRoleIdsByUserId.do?id="+row.id).then((response)=>{
+                            // 如果返回Result(flag,message,data)，data封装List<Integer>
+                            // this.RoleIds = response.data.data;
+                            // 如果返回List<Integer>
+                            this.roleIds = response.data;
+                    })
+                    }else{
+                        this.$message.error(response.data.message);
+                    }
+                }).catch((error)=>{
 
-                        })
-                    }
-                    else{
-                        this.$message({
-                            type:"error",
-                            message:response.data.message
-                        })
-                    }
-                }).catch((error)={
+                    })
+                }
+            else{
+                    this.$message({
+                        type:"error",
+                        message:response.data.message
+                    })
+                }
+            }).catch((error)={
 
                 })
             },
@@ -474,31 +464,31 @@
                 }).then(() => {
                     // 使用axios完成删除
                     axios.post("/user/deleteById.do?id="+row.id,this.formData).then((response)=>{
-                        // 返回Result(flag,message,data)
-                        if(response.data.flag){
-                            this.findPage();
-                            this.$message({
-                                type:"success",
-                                message:response.data.message
-                            })
-                        }else{
-                            this.$message({
-                                type:"error",
-                                message:response.data.message
-                            })
-                        }
-                        // 刷新页面
-                        this.findPage();
-                    }).catch((error)=>{
-                        // 捕获后台的异常
-                        this.showError(error);
-                    })
-                }).catch(() => {
+                    // 返回Result(flag,message,data)
+                    if(response.data.flag){
+                    this.findPage();
                     this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
+                        type:"success",
+                        message:response.data.message
+                    })
+                }else{
+                    this.$message({
+                        type:"error",
+                        message:response.data.message
+                    })
+                }
+                // 刷新页面
+                this.findPage();
+            }).catch((error)=>{
+                    // 捕获后台的异常
+                    this.showError(error);
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
                 });
+            });
             }
         }
     })
