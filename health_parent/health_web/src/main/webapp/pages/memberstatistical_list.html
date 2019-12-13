@@ -31,9 +31,6 @@
             <div class="excelTitle">
                 <br>
                 <el-row :gutter="5">
-                    <el-col :span="5">
-                        <div></div>
-                    </el-col>
                     <el-col :span="7" :offset="6">
                         <template>
                             <div class="block">
@@ -51,12 +48,10 @@
                                 </el-date-picker>
                             </div>
                         </template>
-
                     </el-col>
                     <el-col :span="3">
                         <el-button round @click="submitOrder()">点击查询</el-button>
                     </el-col>
-                    <el-col :span="5"></el-col>
                 </el-row>
             </div>
 
@@ -72,7 +67,7 @@
         var vue = new Vue({
             el: "#app",
             data: {
-                value2: [new Date(new Date().getFullYear(), 0),new Date()],
+                value2: [new Date(new Date().getFullYear(), 0), new Date()],
                 pickerOptions: {
                     shortcuts: [{
                         text: '本月',
@@ -146,7 +141,7 @@
                     }
                 }
             },
-            created(){
+            created() {
                 this.submitOrder()
             }
         });
