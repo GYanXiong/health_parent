@@ -20,4 +20,5 @@ public class RedisConstant {
 
     // 使用套餐id，查询套餐的详情的key
     public static final String SETMEAL_HASH_RESOURCE =  "healthSetmealMap";
+    public static final String SETMEAL_LIST_RESOURCE =  "healthSetmealList";
 }

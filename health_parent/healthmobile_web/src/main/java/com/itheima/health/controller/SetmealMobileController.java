@@ -41,13 +41,13 @@ public class SetmealMobileController {
     public Result getSetmeal() {
         Jedis resource = jedisPool.getResource();
         try {
-            List<String> hvals = resource.hvals(RedisConstant.SETMEAL_HASH_RESOURCE);
+            List<String> hvals = resource.lrange(RedisConstant.SETMEAL_LIST_RESOURCE,0,-1);
             if (ObjectUtils.isEmpty(hvals)) {
                 List<Setmeal> list = setmealService.findAll();
                 System.out.println(list);
                 for (Setmeal setmeal : list) {
                     String setMealString = JSONObject.toJSONString(setmeal);
-                    resource.hset(RedisConstant.SETMEAL_HASH_RESOURCE, setmeal.getId() + "", setMealString);
+                    resource.rpush(RedisConstant.SETMEAL_LIST_RESOURCE, setMealString);
                     hvals.add(setMealString);
                 }
             }
@@ -69,7 +69,9 @@ public class SetmealMobileController {
             String hget = resource.hget(RedisConstant.SETMEAL_HASH_RESOURCE, id + "");
             if (StringUtils.isEmpty(hget)) {
                 Setmeal setmeal = setmealService.findById(id);
-                return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, JSONObject.toJSONString(setmeal));
+                String data = JSONObject.toJSONString(setmeal);
+                resource.hset(RedisConstant.SETMEAL_HASH_RESOURCE, setmeal.getId() + "", data);
+                return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, data);
             } else {
                 return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, hget);
             }

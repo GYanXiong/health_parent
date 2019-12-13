@@ -16,7 +16,6 @@
     <!--方案一：-->
     <!--<context:annotation-config></context:annotation-config>-->
     <!--方案二：-->
-    <context:property-placeholder location="classpath:redis.properties"></context:property-placeholder>
     <context:component-scan base-package="com.itheima.health"/>
 
     <!--1：创建Reids的连接池配置-->
