@@ -17,7 +17,7 @@
         <selectKey resultType="int" keyProperty="id" order="AFTER">
             select last_insert_id()
         </selectKey>
-        insert into t_user(gender,username,remark,station,telephone) values(#{gender},#{username},#{remark},#{station},#{telephone})
+        insert into t_user(gender,username,password,remark,station,telephone) values(#{gender},#{username},#{password},#{remark},#{station},#{telephone})
     </insert>
 
     <!--新增用户和角色的中间表-->
