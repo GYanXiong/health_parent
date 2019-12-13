@@ -86,11 +86,14 @@ public class OrderSettingServiceImpl implements OrderSettingService {
 
     @Override
     public void deleteNumberByOrderDate() {
-        //将一年之前的预约设置数据清除
+        //定时清理预约设置数据
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.YEAR, -1);
+        instance.add(Calendar.MONTH, -1);
         Date date = instance.getTime();
         orderSettingDao.deleteNumberByOrderDate(date);
+        System.out.println("执行完毕"+date);
     }
+
+
 
 }
