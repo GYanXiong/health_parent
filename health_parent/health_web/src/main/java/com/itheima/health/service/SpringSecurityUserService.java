@@ -3,6 +3,7 @@ package com.itheima.health.service;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.health.pojo.Permission;
 import com.itheima.health.pojo.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +33,31 @@ public class SpringSecurityUserService implements UserDetailsService {
     @Reference
     UserService userService;
 
+    @Autowired
+    private JedisPool jedisPool;
+
 
     // 当使用SpringSecurity进行认证和授权的时候，一定会执行
     // 传递参数：String username，表示登录页面传递的登录名
     // 返回值：表示认证成功指定对象UserDetails，存放用户信息和权限的信息<security:user name="admin" password="{noop}admin" authorities="ROLE_ADMIN"
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         //1：完成认证，使用登录名作为查询条件，查询数据库，获取当前登录名对应的用户信息
         com.itheima.health.pojo.User user = userService.findUserByUsername(username);
         // 表示认证失败（登录名的校验）,return null;表示认证失败，此时页面会抛出异常（org.springframework.security.authentication.InternalAuthenticationServiceException:用户名输入有误）
         if(user==null){
             return null;
         }
+
+        Jedis jedis = jedisPool.getResource();
+        String i = jedis.get(user.getUsername());
+        jedis.close();
+
+        if(!StringUtils.isEmpty(i) && i.equals("5")){
+            return null;
+        }
+
         //2：完成授权，使用登录名作为查询条件，查询数据库，获取当前登录名对应的角色（keyword）和权限（keyword）
         List<GrantedAuthority> list = new ArrayList<>();
         if(user.getRoles()!=null && user.getRoles().size()>0){

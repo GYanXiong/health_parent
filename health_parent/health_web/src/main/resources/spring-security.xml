@@ -46,6 +46,10 @@
 
     -->
     <security:http auto-config="true" use-expressions="true">
+
+
+
+
         <!--因为SpringSecurity默认对iframe标签、frame加载的页面是无权访问，需要放开权限
             policy="DENY"：默认值，表示无权访问
             policy="SAMEORIGIN"：表示同域名下可以访问
@@ -74,7 +78,10 @@
                              login-processing-url="/login.do"
                              default-target-url="/pages/main.html"
                              authentication-failure-url="/login.html"
-                             always-use-default-target="true"></security:form-login>
+                             always-use-default-target="true"
+                             authentication-failure-handler-ref="loginFailedHandler"
+                             authentication-success-handler-ref="loginSeccessLullyHandler"
+        ></security:form-login>
 
         <!--配置退出登录信息
             * logout-url=""：退出的url
@@ -100,5 +107,7 @@
 
     <!--使用SpringSecurity提供的BCryptPasswordEncoder-->
     <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <bean id="loginFailedHandler" class="com.itheima.health.service.LoginFailedHandler"/>
+    <bean id="loginSeccessLullyHandler" class="com.itheima.health.service.LoginSeccessLullyHandler"/>
 
 </beans>

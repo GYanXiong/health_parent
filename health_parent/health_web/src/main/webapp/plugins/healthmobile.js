@@ -1,3 +1,15 @@
+// 修改url的某个参数值：
+//替换指定传入参数的值,paramName为参数,replaceWith为新值
+function replaceParamVal(paramName,replaceWith) {
+    var oUrl = this.location.href.toString();
+    var re=eval('/('+ paramName+'=)([^&]*)/gi');
+    var nUrl = oUrl.replace(re,paramName+'='+replaceWith);
+    this.location = nUrl;
+    window.location.href=nUrl
+}
+
+
+
 //获取指定的URL参数值 http://localhost/pages/setmeal_detail.html?id=3&name=jack
 function getUrlParam(paraName) {
     var url = document.location.toString();

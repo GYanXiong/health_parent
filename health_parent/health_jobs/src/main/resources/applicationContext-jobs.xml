@@ -15,15 +15,20 @@
     <!--1：配置自定义Job类-->
     <bean id="jobDemo" class="com.itheima.health.job.ClearImgJob"/>
     <bean id="clearDataNumber" class="com.itheima.health.job.ClearDataNumber"/>
+    <bean id="clearDataNumber2" class="com.itheima.health.job.ClearDataNumber"/>
     <!--2：创建任务描述细节类（工厂），描述任务类和任务类中的方法-->
-    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <bean id="jobDetail01" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="jobDemo"/>
         <property name="targetMethod" value="deletePic"/>
     </bean>
 
-    <bean id="jobDetail1111" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <bean id="jobDetail02" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="clearDataNumber"/>
         <property name="targetMethod" value="deleteNumberByOrderDate"/>
+    </bean>
+    <bean id="jobDetail03" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="clearDataNumber2"/>
+        <property name="targetMethod" value="deleteRedisKey"/>
     </bean>
 
     <!--3：创建触发器对象（工厂），指定触发任务的时间
@@ -31,8 +36,8 @@
     1：SimpleTriggerFactoryBean：（频率）（每隔多长时间执行一次）
     2：CronTriggerFactoryBean：（定时定点）（功能更强大）
     -->
-    <bean id="trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobDetail"/>
+    <bean id="trigger01" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail01"/>
         <!--指定时间
              cronExpression：表达式，指定时间
              0/10 * * * * ? ：从0秒开始计算，每隔10秒执行一次任务
@@ -40,17 +45,23 @@
         <property name="cronExpression" value="10 27 12 * * ?"/>
     </bean>
     <!--清理历史预约数据设置-->
-    <bean id="trigger1111" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobDetail1111"/>
+    <bean id="trigger02" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail02"/>
         <property name="cronExpression" value="0 0 1 1 * ?"/>
-                                <!--每月1号凌晨1点执行一次：-->
+                                <!--每月1号凌晨1点执行一次0 0 1 1 * ?：-->
+    </bean>
+    <bean id="trigger03" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail03"/>
+        <property name="cronExpression" value="0 0 1 1 * ?"/>
+        <!--每月1号凌晨1点执行一次0 0 1 1 * ?：-->
     </bean>
     <!--4：创建任务调度对象（工厂），调度触发器-->
     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="trigger"/>
-                <ref bean="trigger1111"/>
+                <ref bean="trigger01"/>
+                <ref bean="trigger02"/>
+                <ref bean="trigger03"/>
             </list>
         </property>
     </bean>
