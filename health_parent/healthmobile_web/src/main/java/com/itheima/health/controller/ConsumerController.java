@@ -1,5 +1,6 @@
 package com.itheima.health.controller;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSONObject;
 import com.itheima.health.entity.ConsumerEncryptData;
 import com.itheima.health.entity.Result;
@@ -26,9 +27,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerController {
-    private final String REDIS_HASH_KEY = "tianyi_consumer_hash";
 
-    @Autowired
+    @Reference
     private ConsumerService consumerService;
     @Autowired
     private JedisPool jedisPool;
