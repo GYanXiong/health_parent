@@ -68,7 +68,7 @@
             mounted(){
                 axios.post("/order/findById.do?id=" + id).then((response) => {
                     // 返回Result(flag,message,data) data: Map<String,Object>  map集合的key：member、setmeal、orderDate、orderType
-                    this.orderInfo = response.data.data;
+                    this.orderInfo = eval("("+response.data.data+")");
                 });
             }
         });
