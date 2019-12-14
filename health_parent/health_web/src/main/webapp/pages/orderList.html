@@ -16,7 +16,9 @@
     <body class="hold-transition">
         <div id="app">
             <div class="content-header">
-                <h1>预约管理<small>检查项管理</small></h1>
+                <h1>预约管理
+                    <small>检查项管理</small>
+                </h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                     <el-breadcrumb-item>预约管理</el-breadcrumb-item>
@@ -26,19 +28,33 @@
             <div class="app-container">
                 <div class="box">
                     <div class="filter-container">
-                        <el-input placeholder="预约手机号/套餐名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <el-input placeholder="预约手机号/套餐名称" v-model="pagination.queryString" style="width: 200px;"
+                                  class="filter-item"></el-input>
                         <el-button @click="handleCurrentChange(1)" class="dalfBut">查询</el-button>
                     </div>
                     <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                         <el-table-column type="index" align="center" label="序号"></el-table-column>
                         <el-table-column prop="phoneNumber" label="预约手机号" align="center"></el-table-column>
                         <el-table-column prop="name" label="套餐名称" align="center"></el-table-column>
-                        <el-table-column prop="orderType" label="预约类型" align="center"></el-table-column>
-                        <el-table-column prop="orderStatus" label="订单状态" align="center"></el-table-column>
+                        <el-table-column prop="orderType" label="预约类型" @cell-style="changeCellStyle(this)" align="center"></el-table-column>
+                        <el-table-column prop="orderStatus" label="订单状态" align="center">
+                            <template scope="scope">
+                                <span v-if="scope.row.orderStatus==='已到诊'" style="color: green">已到诊</span>
+                                <span v-else="scope.row.orderStatus==='未到诊'" style = "color: red">未到诊</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
-                                <el-button type="primary" size="mini" @click="handleVisited(scope.row)">已到诊</el-button>
-                                <el-button size="mini" type="danger" @click="handleNotVisited(scope.row)">未到诊</el-button>
+                                <el-switch
+                                        v-model="scope.row.orderStatus"
+                                        @change="changeSwitch(scope.row)"
+                                        active-color="#13ce66"
+                                        inactive-color="#ff4949"
+                                        active-value="已到诊"
+                                        inactive-value="未到诊">
+                                </el-switch>
+                                <!--<el-button type="primary" size="mini" @click="handleVisited(scope.row)">已到诊</el-button>
+                                <el-button size="mini" type="danger" @click="handleNotVisited(scope.row)">未到诊</el-button>-->
                             </template>
                         </el-table-column>
                     </el-table>
@@ -64,16 +80,15 @@
     <script>
         var vue = new Vue({
             el: '#app',
-            data:{
+            data: {
                 pagination: {//分页相关模型数据
                     currentPage: 1,//当前页码
-                    pageSize:10,//每页显示的记录数
-                    total:0,//总记录数
-                    queryString:null//查询条件
+                    pageSize: 10,//每页显示的记录数
+                    total: 0,//总记录数
+                    queryString: null//查询条件
                 },
                 dataList: [],//当前页要展示的分页列表数据
-                dialogFormVisible: false,//增加表单是否可见
-                dialogFormVisible4Edit:false,//编辑表单是否可见
+                isVisited: null
             },
             //钩子函数，VUE对象初始化完成后自动执行
             created() {
@@ -85,15 +100,15 @@
                 findPage() {
                     // 传递QueryPageBean中的属性作为参数，响应PageResult中属性作为结果
                     var params = {
-                        currentPage:this.pagination.currentPage,
-                        pageSize:this.pagination.pageSize,
-                        queryString:this.pagination.queryString
+                        currentPage: this.pagination.currentPage,
+                        pageSize: this.pagination.pageSize,
+                        queryString: this.pagination.queryString
                     };
-                    axios.post("/order/findPageByYesterdayAndToday.do",params).then((response)=>{
+                    axios.post("/order/findPageByYesterdayAndToday.do", params).then((response) => {
                         // 响应的数据PageResult(Long total, List rows)
                         this.pagination.total = response.data.total;
                         this.dataList = response.data.rows;
-                    }).catch((error)=>{
+                    }).catch((error) => {
                         this.$message.error(error.toString());
                     })
 
@@ -103,25 +118,32 @@
                     this.pagination.currentPage = currentPage; // 重新赋值当前页
                     this.findPage();
                 },
-                handleVisited(row){
-                    axios.post("/order/updateForVisited.do?id=" + row.id).then((response)=>{
+                handleVisited(row) {
+                    axios.post("/order/updateForVisited.do?id=" + row.id).then((response) => {
                         // 响应的数据PageResult(Long total, List rows)
                         this.$message.success(response.data.message);
-                    }).catch((error)=>{
+                        this.findPage();
+                    }).catch((error) => {
                         this.$message.error(error.toString());
                     });
-                    this.findPage();
-                },
-                handleNotVisited(row){
-                    axios.post("/order/updateForNotVisited.do?id=" + row.id).then((response)=>{
-                        // 响应的数据PageResult(Long total, List rows)
-                        this.$message.success(response.data.message);
-                    }).catch((error)=>{
-                        this.$message.error(error.toString());
-                    });
-                    this.findPage();
-                }
 
+                },
+                handleNotVisited(row) {
+                    axios.post("/order/updateForNotVisited.do?id=" + row.id).then((response) => {
+                        // 响应的数据PageResult(Long total, List rows)
+                        this.$message.success(response.data.message);
+                        this.findPage();
+                    }).catch((error) => {
+                        this.$message.error(error.toString());
+                    });
+                },
+                changeSwitch(row) {
+                    if (row.orderStatus === '已到诊') {
+                        this.handleVisited(row);
+                    } else {
+                        this.handleNotVisited(row);
+                    }
+                }
             }
         })
     </script>

@@ -88,6 +88,7 @@
         <if test="queryString!=null and queryString.length>0">
             and (m.phoneNumber like concat('%',#{queryString},'%') OR s.name like concat('%',#{queryString},'%'))
         </if>
+        order by orderStatus
     </select>
 
     <!--更新订单状态为已到诊-->
