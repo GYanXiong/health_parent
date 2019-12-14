@@ -1,13 +1,17 @@
 package com.itheima.health.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.itheima.health.constant.MessageConstant;
 import com.itheima.health.dao.MemberDao;
 import com.itheima.health.dao.OrderDao;
 import com.itheima.health.dao.OrderSettingDao;
+import com.itheima.health.entity.PageResult;
 import com.itheima.health.entity.Result;
 import com.itheima.health.pojo.Member;
 import com.itheima.health.pojo.Order;
+import com.itheima.health.pojo.OrderList;
 import com.itheima.health.pojo.OrderSetting;
 import com.itheima.health.service.OrderService;
 import com.itheima.health.utils.DateUtils;
@@ -117,5 +121,26 @@ public class OrderServiceImpl implements OrderService {
         return map;
     }
 
+    @Override
+    public PageResult findPageByYesterdayAndToday(Integer currentPage, Integer pageSize, String queryString) throws Exception {
+        PageHelper.startPage(currentPage,pageSize);
+        // 2：查询
 
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DATE, -1);
+        Date start = startCalendar.getTime();
+        Page<OrderList> page = orderDao.findPageByYesterdayAndToday(queryString, DateUtils.parseDate2String(start), DateUtils.parseDate2String(new Date()));
+        // 3：封装PageResult数据
+        return new PageResult(page.getTotal(),page.getResult());
+    }
+
+    @Override
+    public void updateForVisited(Integer id) {
+        orderDao.updateForVisited(id);
+    }
+
+    @Override
+    public void updateForNotVisited(Integer id) {
+        orderDao.updateForNotVisited(id);
+    }
 }

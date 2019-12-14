@@ -72,4 +72,8 @@ public class MessageConstant {
     public static final String USER_NO_ROLE = "当前用户没有权限，请联系管理员";
 
 
+    public static final String GET_ORDER_LIST_SUCCESS = "获取今天, 明天订单信息成功";
+    public static final String GET_ORDER_LIST_FAIL = "获取今天, 明天订单信息成功";
+    public static final String UPDATE_ORDER_FAIL = "更新订单信息失败" ;
+    public static final String UPDATE_ORDER_SUCCESS = "更新订单信息成功";
 }

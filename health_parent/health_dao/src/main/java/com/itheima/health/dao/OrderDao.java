@@ -1,8 +1,10 @@
 package com.itheima.health.dao;
 
+import com.github.pagehelper.Page;
 import com.itheima.health.pojo.Order;
+import com.itheima.health.pojo.OrderList;
+import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,5 +26,9 @@ public interface OrderDao {
 
     List<Map> findHotSetmeal();
 
+    Page<OrderList> findPageByYesterdayAndToday(@Param("queryString") String queryString, @Param("start") String start, @Param("end") String end);
 
+    void updateForVisited(Integer id);
+
+    void updateForNotVisited(Integer id);
 }

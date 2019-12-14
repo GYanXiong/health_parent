@@ -81,4 +81,23 @@
         LIMIT 0,4
     </select>
 
+    <!--查询昨天和明天的预约订单-->
+    <select id="findPageByYesterdayAndToday" resultType="orderList" parameterType="string">
+        select o.*, m.`phoneNumber`, s.`name` from t_order o, t_member m, t_setmeal s where o.`member_id` = m.`id` and o.`setmeal_id` = s.`id`
+        and orderDate &gt;= #{start} and orderDate &lt;= #{end}
+        <if test="queryString!=null and queryString.length>0">
+            and (m.phoneNumber like concat('%',#{queryString},'%') OR s.name like concat('%',#{queryString},'%'))
+        </if>
+        order by orderStatus
+    </select>
+
+    <!--更新订单状态为已到诊-->
+    <select id="updateForVisited" parameterType="int">
+        update t_order set orderStatus = '已到诊' where id = #{value}
+    </select>
+
+    <!--更新订单状态为未到诊-->
+    <select id="updateForNotVisited" parameterType="int">
+        update t_order set orderStatus = '未到诊' where id = #{value}
+    </select>
 </mapper>

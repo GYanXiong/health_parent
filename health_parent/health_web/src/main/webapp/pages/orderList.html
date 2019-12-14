@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>传智健康</title>
+        <meta name="description" content="传智健康">
+        <meta name="keywords" content="传智健康">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>预约管理
+                    <small>检查项管理</small>
+                </h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>预约管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>预约列表</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+                    <div class="filter-container">
+                        <el-input placeholder="预约手机号/套餐名称" v-model="pagination.queryString" style="width: 200px;"
+                                  class="filter-item"></el-input>
+                        <el-button @click="handleCurrentChange(1)" class="dalfBut">查询</el-button>
+                    </div>
+                    <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                        <el-table-column type="index" align="center" label="序号"></el-table-column>
+                        <el-table-column prop="phoneNumber" label="预约手机号" align="center"></el-table-column>
+                        <el-table-column prop="name" label="套餐名称" align="center"></el-table-column>
+                        <el-table-column prop="orderType" label="预约类型" @cell-style="changeCellStyle(this)" align="center"></el-table-column>
+                        <el-table-column prop="orderStatus" label="订单状态" align="center">
+                            <template scope="scope">
+                                <span v-if="scope.row.orderStatus==='已到诊'" style="color: green">已到诊</span>
+                                <span v-else="scope.row.orderStatus==='未到诊'" style = "color: red">未到诊</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <el-switch
+                                        v-model="scope.row.orderStatus"
+                                        @change="changeSwitch(scope.row)"
+                                        active-color="#13ce66"
+                                        inactive-color="#ff4949"
+                                        active-value="已到诊"
+                                        inactive-value="未到诊">
+                                </el-switch>
+                                <!--<el-button type="primary" size="mini" @click="handleVisited(scope.row)">已到诊</el-button>
+                                <el-button size="mini" type="danger" @click="handleNotVisited(scope.row)">未到诊</el-button>-->
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <el-pagination
+                                class="pagiantion"
+                                @current-change="handleCurrentChange"
+                                :current-page="pagination.currentPage"
+                                :page-size="pagination.pageSize"
+                                layout="total, prev, pager, next, jumper"
+                                :total="pagination.total">
+                        </el-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data: {
+                pagination: {//分页相关模型数据
+                    currentPage: 1,//当前页码
+                    pageSize: 10,//每页显示的记录数
+                    total: 0,//总记录数
+                    queryString: null//查询条件
+                },
+                dataList: [],//当前页要展示的分页列表数据
+                isVisited: null
+            },
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                // 查询数据
+                this.findPage();
+            },
+            methods: {
+                //分页查询
+                findPage() {
+                    // 传递QueryPageBean中的属性作为参数，响应PageResult中属性作为结果
+                    var params = {
+                        currentPage: this.pagination.currentPage,
+                        pageSize: this.pagination.pageSize,
+                        queryString: this.pagination.queryString
+                    };
+                    axios.post("/order/findPageByYesterdayAndToday.do", params).then((response) => {
+                        // 响应的数据PageResult(Long total, List rows)
+                        this.pagination.total = response.data.total;
+                        this.dataList = response.data.rows;
+                    }).catch((error) => {
+                        this.$message.error(error.toString());
+                    })
+
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage; // 重新赋值当前页
+                    this.findPage();
+                },
+                handleVisited(row) {
+                    axios.post("/order/updateForVisited.do?id=" + row.id).then((response) => {
+                        // 响应的数据PageResult(Long total, List rows)
+                        this.$message.success(response.data.message);
+                        this.findPage();
+                    }).catch((error) => {
+                        this.$message.error(error.toString());
+                    });
+
+                },
+                handleNotVisited(row) {
+                    axios.post("/order/updateForNotVisited.do?id=" + row.id).then((response) => {
+                        // 响应的数据PageResult(Long total, List rows)
+                        this.$message.success(response.data.message);
+                        this.findPage();
+                    }).catch((error) => {
+                        this.$message.error(error.toString());
+                    });
+                },
+                changeSwitch(row) {
+                    if (row.orderStatus === '已到诊') {
+                        this.handleVisited(row);
+                    } else {
+                        this.handleNotVisited(row);
+                    }
+                }
+            }
+        })
+    </script>
+</html>
